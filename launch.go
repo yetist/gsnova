@@ -1,20 +1,20 @@
 package main
 
 import (
-	"common"
-	"event"
+	"github.com/yetist/gsnova/common"
+	"github.com/yetist/gsnova/event"
 	"flag"
 	"fmt"
 	"log"
 	"net"
 	"os"
 	"path/filepath"
-	"proxy"
-	"remote"
+	"github.com/yetist/gsnova/proxy"
+	"github.com/yetist/gsnova/remote"
 	"runtime"
 	"sync/atomic"
 	"time"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 const (
@@ -126,7 +126,7 @@ func main() {
 			util.OpenBrowser("http://localhost:" + common.ProxyPort + "/")
 		}()
 	}
-	testEntry()
+	//testEntry()
 	startLocalProxyServer(addr, proxy.GLOBAL_PROXY_SERVER)
 	//launchSystemTray()
 
