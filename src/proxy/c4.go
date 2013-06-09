@@ -2,11 +2,11 @@ package proxy
 
 import (
 	"bytes"
-	"common"
+	"github.com/yetist/gsnova/common"
 	"crypto/tls"
 	"encoding/binary"
 	"errors"
-	"event"
+	"github.com/yetist/gsnova/event"
 	//"fmt"
 	"io"
 	"log"
@@ -18,7 +18,7 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 var C4Enable bool

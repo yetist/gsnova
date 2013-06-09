@@ -11,7 +11,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 const (

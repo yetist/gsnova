@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 type IPRange struct {

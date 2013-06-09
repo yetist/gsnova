@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	"event"
+	"github.com/yetist/gsnova/event"
 	"fmt"
 	"io"
 	"io/ioutil"

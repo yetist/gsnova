@@ -2,9 +2,9 @@ package proxy
 
 import (
 	"bytes"
-	"common"
+	"github.com/yetist/gsnova/common"
 	"crypto/tls"
-	"event"
+	"github.com/yetist/gsnova/event"
 	"fmt"
 	"io"
 	"log"
@@ -14,7 +14,7 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 const (

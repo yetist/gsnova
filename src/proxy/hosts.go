@@ -2,7 +2,7 @@ package proxy
 
 import (
 	"bufio"
-	"common"
+	"github.com/yetist/gsnova/common"
 	"io/ioutil"
 	"log"
 	"net"
@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 const (

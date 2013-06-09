@@ -2,10 +2,10 @@ package proxy
 
 import (
 	"bytes"
-	"common"
+	"github.com/yetist/gsnova/common"
 	"crypto/rc4"
 	"encoding/base64"
-	"event"
+	"github.com/yetist/gsnova/event"
 	"fmt"
 	//"io/ioutil"
 	"log"

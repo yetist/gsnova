@@ -3,9 +3,9 @@ package proxy
 import (
 	"bufio"
 	"bytes"
-	"common"
+	"github.com/yetist/gsnova/common"
 	"crypto/tls"
-	"event"
+	"github.com/yetist/gsnova/event"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -16,7 +16,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 const (

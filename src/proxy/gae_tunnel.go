@@ -1,13 +1,13 @@
 package proxy
 
 import (
-	"event"
+	"github.com/yetist/gsnova/event"
 	"log"
 	"net"
 	"net/http/httputil"
 	"strings"
 	"time"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 func (gae *GAEHttpConnection) tunnel_write(conn *SessionConnection) {

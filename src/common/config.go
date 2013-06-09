@@ -4,8 +4,8 @@ import (
 	"log"
 	"net"
 	//"net/url"
-	"event"
-	"util"
+	"github.com/yetist/gsnova/event"
+	"github.com/yetist/gsnova/util"
 )
 
 var Cfg *util.Ini

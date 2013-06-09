@@ -3,8 +3,8 @@ package proxy
 import (
 	"archive/zip"
 	"bytes"
-	"common"
-	"event"
+	"github.com/yetist/gsnova/common"
+	"github.com/yetist/gsnova/event"
 	"fmt"
 	"html/template"
 	"io"
@@ -15,7 +15,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 var lp *util.DelegateConnListener

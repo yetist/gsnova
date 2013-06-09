@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 	"bytes"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 func containsAttr(attrs map[string]string, key string) bool{

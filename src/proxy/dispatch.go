@@ -2,16 +2,16 @@ package proxy
 
 import (
 	"bufio"
-	"event"
+	"github.com/yetist/gsnova/event"
 	"fmt"
 	"io"
 	"log"
-	"misc/socks"
+	"github.com/yetist/gsnova/misc/socks"
 	"net"
 	"net/http"
 	"strings"
 	"time"
-	"util"
+	"github.com/yetist/gsnova/util"
 )
 
 const (
