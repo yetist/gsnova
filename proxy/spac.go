@@ -3,20 +3,21 @@ package proxy
 import (
 	"bufio"
 	"bytes"
-	"github.com/yetist/gsnova/common"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/yetist/gsnova/common"
+	"github.com/yetist/gsnova/util"
 	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 	"os"
+	"path"
 	"regexp"
 	"strings"
 	"text/template"
 	"time"
-	"github.com/yetist/gsnova/util"
 )
 
 var spac_script_path []string
@@ -199,13 +200,18 @@ function FindProxyForURL(url, host) {
 	return {{.DefaultVar}};
 }`
 
+var spac_cache_dir = path.Join(common.PathCfg.User_dir, ".cache", "gsnova", "spac")
+var spac_data_dir := path.Join(common.PathCfg.Data_dir, "spac")
+
 func load_gfwlist_rule() {
 	var buffer bytes.Buffer
-	if content, err := ioutil.ReadFile(common.Home + "spac/snova-gfwlist.txt"); nil == err {
+	snova_gfw := path.Join(spac_cache_dir, "snova-gfwlist.txt")
+	if content, err := ioutil.ReadFile(snova_gfw); nil == err {
 		buffer.Write(content)
 	}
 	buffer.WriteString("\n")
-	if content, err := ioutil.ReadFile(common.Home + "spac/user-gfwlist.txt"); nil == err {
+	user_gfw := path.Join(spac_cache_dir, "user-gfwlist.txt")
+	if content, err := ioutil.ReadFile(user_gfw); nil == err {
 		buffer.Write(content)
 	}
 	init_gfwlist_func(buffer.String())
@@ -232,7 +238,8 @@ func generatePAC(url, date, content string) string {
 	pac.DefaultString = "DIRECT"
 	jscode := []string{}
 
-	if usercontent, err := ioutil.ReadFile(common.Home + "spac/user-gfwlist.txt"); nil == err {
+	user_gfw := path.Join(spac_cache_dir, "user-gfwlist.txt")
+	if usercontent, err := ioutil.ReadFile(user_gfw); nil == err {
 		content = content + "\n" + string(usercontent)
 	}
 
@@ -365,12 +372,12 @@ func generatePACFromGFWList(url string) {
 	time.Sleep(5 * time.Second)
 	log.Printf("Generate PAC from  gfwlist %s\n", url)
 	load_gfwlist_rule()
-	gfwlist_txt := common.Home + "spac/snova-gfwlist.txt"
+	gfwlist_txt := path.Join(spac_cache_dir, "snova-gfwlist.txt")
 	var file_ts time.Time
 	if fi, err := os.Stat(gfwlist_txt); nil == err {
 		file_ts = fi.ModTime()
 	}
-	hf := common.Home + "spac/snova-gfwlist.pac"
+	hf := path.Join(spac_cache_dir, "snova-gfwlist.pac")
 	body, last_mod_date, err := util.FetchLateastContent(url, common.ProxyPort, file_ts, false)
 	if nil == err {
 		content := []byte{}
@@ -406,13 +413,16 @@ func PostInitSpac() {
 
 func InitSpac() {
 	spac = &SpacConfig{}
-	os.Mkdir(common.Home+"spac/", 0755)
 	spac.defaultRule, _ = common.Cfg.GetProperty("SPAC", "Default")
 	if len(spac.defaultRule) == 0 {
 		spac.defaultRule = GAE_NAME
 	}
+	os.MkdirAll(spac_cache_dir, 0755)
 	//user script has higher priority
-	spac_script_path = []string{common.Home + "spac/user_pre_spac.json", common.Home + "spac/cloud_spac.json", common.Home + "spac/user_spac.json"}
+	spac_script_path = []string{
+		path.Join(data_dir, "user_pre_spac.json"),
+		path.Join(data_dir, "cloud_spac.json"),
+		path.Join(data_dir, "user_spac.json")}
 	spac.rules = make([]*JsonRule, 0)
 	if enable, exist := common.Cfg.GetIntProperty("SPAC", "Enable"); exist {
 		spac_enable = (enable == 1)

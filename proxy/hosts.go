@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 	"github.com/yetist/gsnova/util"
+	"path"
 )
 
 const (
@@ -40,15 +41,18 @@ var rangeFetchTimeoutSecs = 90 * time.Second
 var hostInjectRangePatterns = []*regexp.Regexp{}
 var hostRangeConcurrentFether = uint32(5)
 
-func loadDiskHostFile() {
-	files, err := ioutil.ReadDir(common.Home + "hosts/")
+var hosts_data_dir = path.Join(common.PathCfg.Data_dir, "hosts")
+var hosts_cache_dir = path.Join(common.PathCfg.User_dir, ".cache", "gsnova", "hosts")
+
+func loadDiskHostFile(dir string) {
+	files, err := ioutil.ReadDir(dir)
 	if nil == err {
 		for _, file := range files {
 			switch file.Name() {
 			case USER_HOSTS_FILE, CLOUD_HOSTS_FILE:
 				continue
 			}
-			content, err := ioutil.ReadFile(common.Home + "hosts/" + file.Name())
+			content, err := ioutil.ReadFile(path.Join(hosts_cache_dir, file.Name()))
 			if nil == err {
 				reader := bufio.NewReader(strings.NewReader(string(content)))
 				for {
@@ -81,7 +85,7 @@ func loadDiskHostFile() {
 
 func loadHostFile() {
 	hostMapping = make(map[string]string)
-	loadDiskHostFile()
+	loadDiskHostFile(hosts_data_dir)
 	for index, urlstr := range repoUrls {
 		resp, err := util.HttpGet(urlstr, "")
 		if err != nil {
@@ -95,12 +99,12 @@ func loadHostFile() {
 		} else {
 			body, err := ioutil.ReadAll(resp.Body)
 			if nil == err {
-				hf := common.Home + "hosts/" + "hosts_" + strconv.Itoa(index) + ".txt"
+				hf := path.Join(hosts_cache_dir, "hosts_" + strconv.Itoa(index) + ".txt")
 				ioutil.WriteFile(hf, body, 0755)
 			}
 		}
 	}
-	loadDiskHostFile()
+	loadDiskHostFile(hosts_cache_dir)
 }
 
 func isExceptHost(host string) bool {
@@ -142,7 +146,8 @@ func hostNeedInjectRange(host string) bool {
 }
 
 func InitHosts() error {
-	loadLocalHostMappings()
+	os.MkdirAll(hosts_cache_dir, 0755)
+	loadLocalHostMappings(hosts_data_dir)
 	if cloud_hosts, exist := common.Cfg.GetProperty("Hosts", "CloudHosts"); exist {
 		go fetchCloudHosts(cloud_hosts)
 	}
@@ -154,7 +159,6 @@ func InitHosts() error {
 		}
 	}
 	log.Println("Init AutoHost.")
-	os.Mkdir(common.Home+"hosts/", 0755)
 	if dnsserver, exist := common.Cfg.GetProperty("Hosts", "TrustedDNS"); exist {
 		trustedDNS = strings.Split(dnsserver, "|")
 	}

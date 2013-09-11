@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path"
 	//"syscall"
 )
 
@@ -54,12 +55,14 @@ func initLogWriter(path string) *MultiWriter {
 	return writer
 }
 
-
 func AddLogWriter(writer io.Writer) {
 	logWriter.writers = append(logWriter.writers, writer)
 }
 
 func InitLogger() {
+	cache_dir := path.Join(PathCfg.User_dir, "cache")
+	os.MkdirAll(cache_dir, 0755)
+	log_file := path.Join(cache_dir, Product+".log")
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	log.SetOutput(initLogWriter(Home + Product + ".log"))
+	log.SetOutput(initLogWriter(log_file))
 }

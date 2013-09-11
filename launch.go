@@ -55,6 +55,7 @@ func startLocalProxyServer(addr string, proxyServerType int) bool {
 }
 
 func main() {
+	as_server := flag.Bool("server", false, "Run as remote proxy server")
 	path, err := filepath.Abs(os.Args[0])
 	if nil != err {
 		fmt.Println(err)
@@ -62,15 +63,12 @@ func main() {
 	}
 	common.Home, _ = filepath.Split(path)
 
-	as_server := flag.Bool("server", false, "Run as remote proxy server")
-	conf := flag.String("file", common.Home+common.Product+".conf", "Specify config file for gsnova")
 	event.Init()
 	flag.Parse()
 	if *as_server {
 		remote.LaunchC4HttpServer()
 		return
 	}
-	common.CfgFile = *conf
 	common.InitLogger()
 	common.InitConfig()
 	proxy.InitHosts()

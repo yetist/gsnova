@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 	"github.com/yetist/gsnova/util"
+	"path"
 )
 
 type regexHost struct {
@@ -54,7 +55,7 @@ func loadLocalHostMapping(file string) error {
 func fetchCloudHosts(url string) {
 	time.Sleep(5 * time.Second)
 	log.Printf("Fetch remote clound hosts:%s\n", url)
-	file := common.Home + "hosts/" + CLOUD_HOSTS_FILE
+	file := path.Join(hosts_cache_dir, CLOUD_HOSTS_FILE)
 	var file_ts time.Time
 	if fi, err := os.Stat(file); nil == err {
 		file_ts = fi.ModTime()
@@ -63,17 +64,17 @@ func fetchCloudHosts(url string) {
 	if nil == err && len(body) > 0 {
 		ioutil.WriteFile(file, body, 0666)
 		mapping = make(map[string]*util.ListSelector)
-		loadLocalHostMappings()
+		loadLocalHostMappings(hosts_cache_dir)
 	}
 	if nil != err {
 		log.Printf("Failed to fetch spac cloud hosts for reason:%v\n", err)
 	}
 }
 
-func loadLocalHostMappings() error {
-	loadLocalHostMapping(common.Home + "hosts/" + CLOUD_HOSTS_FILE)
+func loadLocalHostMappings(dir string) error {
+	loadLocalHostMapping(path.Join(dir, CLOUD_HOSTS_FILE))
 	//user hosts has higher priority
-	loadLocalHostMapping(common.Home + "hosts/" + USER_HOSTS_FILE)
+	loadLocalHostMapping(path.Join(dir, USER_HOSTS_FILE))
 	return nil
 }
 

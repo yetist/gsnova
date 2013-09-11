@@ -16,31 +16,33 @@ import (
 	"runtime"
 	"strings"
 	"github.com/yetist/gsnova/util"
+	"path"
 )
 
 var lp *util.DelegateConnListener
+var web_dir = path.Join(common.PathCfg.Data_dir, "web")
 
 func InitSelfWebServer() {
 	lp = util.NewDelegateConnListener()
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Connection", "close")
-		http.FileServer(http.Dir(common.Home+"/web")).ServeHTTP(w, r)
+		http.FileServer(http.Dir(web_dir)).ServeHTTP(w, r)
 	})
 	http.HandleFunc("/share.html", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Connection", "close")
-		http.FileServer(http.Dir(common.Home+"/web")).ServeHTTP(w, r)
+		http.FileServer(http.Dir(web_dir)).ServeHTTP(w, r)
 	})
 	http.HandleFunc("/css/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Connection", "close")
-		http.FileServer(http.Dir(common.Home+"/web")).ServeHTTP(w, r)
+		http.FileServer(http.Dir(web_dir)).ServeHTTP(w, r)
 	})
 	http.HandleFunc("/scripts/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Connection", "close")
-		http.FileServer(http.Dir(common.Home+"/web")).ServeHTTP(w, r)
+		http.FileServer(http.Dir(web_dir)).ServeHTTP(w, r)
 	})
 	http.HandleFunc("/images/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Connection", "close")
-		http.FileServer(http.Dir(common.Home+"/web")).ServeHTTP(w, r)
+		http.FileServer(http.Dir(web_dir)).ServeHTTP(w, r)
 	})
 	http.HandleFunc("/pac/gfwlist", func(w http.ResponseWriter, r *http.Request) {
 		r.URL.Path = "/spac/snova-gfwlist.pac"
@@ -66,12 +68,11 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	dir := common.Home + "/web"
 	path := "/index.html"
 	if req.URL.Path != "/" {
 		path = req.URL.Path
 	}
-	hf := dir + path
+	hf := web_dir + path
 	if t, err := template.ParseFiles(hf); nil == err {
 		type PageContent struct {
 			Product   string
@@ -154,7 +155,7 @@ func rc4Handler(w http.ResponseWriter, req *http.Request) {
 
 func exitHandler(w http.ResponseWriter, req *http.Request) {
 	os.Exit(1)
-}
+
 
 func shareHandler(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
