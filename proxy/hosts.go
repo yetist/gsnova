@@ -111,13 +111,15 @@ func isExceptHost(host string) bool {
 	return hostPatternMatched(exceptHosts, host)
 }
 
-func lookupAvailableAddress(hostport string) (string, bool) {
+func lookupAvailableAddress(hostport string, preferDNS bool) (string, bool) {
 	host, port, err := net.SplitHostPort(hostport)
 	if nil != err {
 		return hostport, false
 	}
-	if addr, exist := trustedDNSQuery(host, port); exist {
-		return net.JoinHostPort(addr, port), true
+	if preferDNS && nil == net.ParseIP(host) {
+		if addr, exist := trustedDNSQuery(host, port); exist {
+			return net.JoinHostPort(addr, port), true
+		}
 	}
 	v, exist := getLocalHostMapping(host)
 	if !exist {
@@ -125,6 +127,12 @@ func lookupAvailableAddress(hostport string) (string, bool) {
 	}
 	if exist && !isTCPAddressBlocked(v, port) {
 		return net.JoinHostPort(v, port), true
+	}
+
+	if !preferDNS && !exist && nil == net.ParseIP(host) {
+		if addr, exist := trustedDNSQuery(host, port); exist {
+			return net.JoinHostPort(addr, port), true
+		}
 	}
 	return hostport, false
 }
@@ -138,7 +146,7 @@ func lookupAvailableHostPort(req *http.Request, hostport string) (string, bool) 
 			return "", false
 		}
 	}
-	return lookupAvailableAddress(hostport)
+	return lookupAvailableAddress(hostport, true)
 }
 
 func hostNeedInjectRange(host string) bool {
