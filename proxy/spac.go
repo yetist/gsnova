@@ -421,7 +421,7 @@ func InitSpac() {
 	//user script has higher priority
 	spac_script_path = []string{
 		path.Join(spac_data_dir, "user_pre_spac.json"),
-		path.Join(spac_data_dir, "cloud_spac.json"),
+		path.Join(spac_cache_dir, "cloud_spac.json"),
 		path.Join(spac_data_dir, "user_spac.json")}
 	spac.rules = make([]*JsonRule, 0)
 	if enable, exist := common.Cfg.GetIntProperty("SPAC", "Enable"); exist {

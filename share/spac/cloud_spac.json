@@ -8,7 +8,7 @@
     "Proxy":["Google", "Default"]
   },
   {
-    "Host" : ["*.ytimg.com*", "*.google.com(.*)?","*.googleusercontent.com*", "*.gstatic.com","*.googlecode.com"],
+    "Host" : ["*.ytimg.com*", "*.google.com(.*)?","*.googleusercontent.com*", "*.gstatic.com", "*.googlecode.com"],
     "Proxy":["GoogleHttps", "Direct", "Default"]
   },
   {
@@ -27,10 +27,5 @@
     "Protocol" : "http",
     "Host": ["twitter.com", "(www.)?facebook.com"],
     "Attr":  ["RedirectHttps"]
-  },
-  {
-    "Protocol" : "https",
-    "Host": ["twitter.com"],
-    "Proxy": ["Default"]
   }
 ]
