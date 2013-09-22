@@ -210,7 +210,7 @@ func load_gfwlist_rule() {
 		buffer.Write(content)
 	}
 	buffer.WriteString("\n")
-	user_gfw := path.Join(spac_cache_dir, "user-gfwlist.txt")
+	user_gfw := path.Join(spac_data_dir, "user-gfwlist.txt")
 	if content, err := ioutil.ReadFile(user_gfw); nil == err {
 		buffer.Write(content)
 	}
