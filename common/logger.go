@@ -60,7 +60,7 @@ func AddLogWriter(writer io.Writer) {
 }
 
 func InitLogger() {
-	cache_dir := path.Join(PathCfg.User_dir, "cache")
+	cache_dir := path.Join(PathCfg.User_dir, ".cache")
 	os.MkdirAll(cache_dir, 0755)
 	log_file := path.Join(cache_dir, Product+".log")
 	log.SetFlags(log.LstdFlags | log.Lshortfile)

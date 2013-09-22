@@ -21,6 +21,7 @@ import (
 
 var lp *util.DelegateConnListener
 var web_dir = path.Join(common.PathCfg.Data_dir, "web")
+var main_cache_dir = path.Join(common.PathCfg.User_dir, ".cache", "gsnova")
 
 func InitSelfWebServer() {
 	lp = util.NewDelegateConnListener()
@@ -49,7 +50,7 @@ func InitSelfWebServer() {
 		w.Header().Set("Connection", "close")
 		w.Header().Set("Content-Type", "application/x-ns-proxy-autoconfig")
 		w.Header().Set("Content-Disposition", "attachment;filename=snova-gfwlist.pac")
-		http.FileServer(http.Dir(common.Home)).ServeHTTP(w, r)
+		http.FileServer(http.Dir(main_cache_dir)).ServeHTTP(w, r)
 	})
 
 	http.HandleFunc("/stat", statHandler)
@@ -84,12 +85,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func processC4ServerPackage(file string, key []byte) error {
-	r, err := zip.OpenReader(common.Home + "/" + file)
+	r, err := zip.OpenReader(main_cache_dir + "/" + file)
 	if err != nil {
 		log.Printf("Failed to zip file for reason:%v", err)
 		return err
 	}
-	w, err := os.Create(common.Home + "/" + string(key) + "_" + file)
+	w, err := os.Create(main_cache_dir + "/" + string(key) + "_" + file)
 	if err != nil {
 		log.Printf("Failed to create zip file for reason:%v", err)
 		return err
@@ -127,7 +128,7 @@ func rc4Handler(w http.ResponseWriter, req *http.Request) {
 		rc4key[i] = alphabet[rand.Int()%len(alphabet)]
 	}
 	found_file := false
-	f, err := os.Open(common.Home)
+	f, err := os.Open(main_cache_dir)
 	if nil == err {
 		fs, err := f.Readdir(-1)
 		if nil == err {
@@ -146,15 +147,16 @@ func rc4Handler(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
-	content := "<p>" + string(rc4key) + "</p><p>Please find processed server files in " + common.Home + "</p>"
+	content := "<p>" + string(rc4key) + "</p><p>Please find processed server files in " + main_cache_dir + "</p>"
 	if !found_file {
-		content = "<p>" + string(rc4key) + "</p><p>No valid C4 server package files in " + common.Home + "</p>"
+		content = "<p>" + string(rc4key) + "</p><p>No valid C4 server package files in " + main_cache_dir + "</p>"
 	}
 	w.Write([]byte(content))
 }
 
 func exitHandler(w http.ResponseWriter, req *http.Request) {
 	os.Exit(1)
+}
 
 
 func shareHandler(w http.ResponseWriter, req *http.Request) {

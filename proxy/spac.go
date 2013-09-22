@@ -201,7 +201,7 @@ function FindProxyForURL(url, host) {
 }`
 
 var spac_cache_dir = path.Join(common.PathCfg.User_dir, ".cache", "gsnova", "spac")
-var spac_data_dir := path.Join(common.PathCfg.Data_dir, "spac")
+var spac_data_dir = path.Join(common.PathCfg.Data_dir, "spac")
 
 func load_gfwlist_rule() {
 	var buffer bytes.Buffer
@@ -348,7 +348,7 @@ func loadIPRangeFile(ipRepo string) {
 		return
 	}
 	time.Sleep(5 * time.Second)
-	hf := common.Home + "spac/" + "iprange.txt"
+	hf := path.Join(spac_cache_dir, "iprange.txt")
 	_, err := os.Stat(hf)
 	if nil != err {
 		var zero time.Time
@@ -420,9 +420,9 @@ func InitSpac() {
 	os.MkdirAll(spac_cache_dir, 0755)
 	//user script has higher priority
 	spac_script_path = []string{
-		path.Join(data_dir, "user_pre_spac.json"),
-		path.Join(data_dir, "cloud_spac.json"),
-		path.Join(data_dir, "user_spac.json")}
+		path.Join(spac_data_dir, "user_pre_spac.json"),
+		path.Join(spac_data_dir, "cloud_spac.json"),
+		path.Join(spac_data_dir, "user_spac.json")}
 	spac.rules = make([]*JsonRule, 0)
 	if enable, exist := common.Cfg.GetIntProperty("SPAC", "Enable"); exist {
 		spac_enable = (enable == 1)

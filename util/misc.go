@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"math/big"
 	"github.com/yetist/gsnova/misc/myasn1"
+	"io"
 	"net"
 	"net/http"
+	"os"
 	"os/exec"
 	"regexp"
 	"runtime"
@@ -202,4 +204,24 @@ func OpenBrowser(urlstr string) error {
 	}
 
 	return exec.Command("xdg-open", urlstr).Run()
+}
+
+func CopyFile(src,dst string)(w int64,err error){
+	srcFile,err := os.Open(src)
+	if err!=nil{
+		fmt.Println(err.Error())
+		return
+	}
+	defer srcFile.Close()
+
+	dstFile,err := os.Create(dst)
+
+	if err!=nil{
+		fmt.Println(err.Error())
+		return
+	}
+
+	defer dstFile.Close()
+
+	return io.Copy(dstFile,srcFile)
 }
